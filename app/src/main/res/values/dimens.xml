@@ -1,0 +1,7 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="component_padding">16dp</dimen>
+    <dimen name="component_margin">16dp</dimen>
+    <dimen name="map_inset_margin">100dp</dimen>
+    <dimen name="default_image_size">48dp</dimen>
+</resources>

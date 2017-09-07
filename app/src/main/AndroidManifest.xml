@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="ua.dp.michaellang.flickr.photogallery">
+
+    <permission
+            android:name="ua.dp.michaellang.flickr.PRIVATE"
+            android:protectionLevel="signature"/>
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="ua.dp.michaellang.photogallery.PRIVATE"/>
+
+    <application
+            android:name="ua.dp.michaellang.flickr.photogallery.PhotoGalleryApplication"
+            android:allowBackup="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:supportsRtl="true"
+            android:theme="@style/AppTheme">
+
+        <meta-data
+                android:name="com.google.android.maps.v2.API_KEY"
+                android:value="AIzaSyBtcysVJKhAP8MBsxH6l3gGtH1pUKaXjkg"/>
+
+        <activity
+                android:name="ua.dp.michaellang.flickr.photogallery.ui.PhotoGalleryActivity"
+                android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <activity
+                android:name="ua.dp.michaellang.flickr.photogallery.ui.SettingsActivity"
+                android:label="@string/title_activity_settings">
+        </activity>
+
+        <activity
+                android:name="ua.dp.michaellang.flickr.photogallery.ui.PhotoPageActivity"
+                android:configChanges="keyboardHidden|orientation|screenSize"/>
+
+        <activity
+                android:name="ua.dp.michaellang.flickr.photogallery.ui.LocatrActivity"
+                android:parentActivityName="ua.dp.michaellang.flickr.photogallery.ui.PhotoGalleryActivity">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="ua.dp.michaellang.flickr.photogallery.ui.PhotoGalleryActivity"/>
+        </activity>
+
+        <service android:name="ua.dp.michaellang.flickr.photogallery.PollService"/>
+
+        <service
+                android:name="ua.dp.michaellang.flickr.photogallery.PollJobService"
+                android:exported="true"
+                android:permission="android.permission.BIND_JOB_SERVICE"/>
+
+        <receiver android:name="ua.dp.michaellang.flickr.photogallery.StartupReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver
+                android:name="ua.dp.michaellang.flickr.photogallery.NotificationReceiver"
+                android:exported="false">
+            <intent-filter android:priority="-999">
+                <action android:name="ua.dp.michaellang.photogallery.SHOW_NOTIFICATION"/>
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

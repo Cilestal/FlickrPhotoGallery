@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+            android:title="@string/pref_header_notifications">
+        <SwitchPreference
+                android:key="pref_isAlarmOn"
+                android:title="@string/pref_title_polling"
+                android:defaultValue="false"
+                android:icon="@drawable/ic_notifications"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+            android:title="@string/pref_header_map">
+        <ListPreference
+                android:title="@string/pref_title_map_search_radius"
+                android:summary="@string/pref_summary_map_search_radius"
+                android:entries="@array/map_search_radius_entries"
+                android:entryValues="@array/map_search_radius_values"
+                android:defaultValue="5000"
+                android:key="pref_max_search_radius"/>
+
+        <ListPreference
+                android:title="@string/pref_title_map_search_count"
+                android:summary="@string/pref_summary_map_search_count"
+                android:entries="@array/map_search_photos_count"
+                android:entryValues="@array/map_search_photos_count"
+                android:defaultValue="100"
+                android:key="pref_max_search_photos"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>

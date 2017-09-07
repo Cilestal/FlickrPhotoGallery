@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="fragment_photo_gallery_rv_cols">3</integer>
+    <integer name="map_circle_radius">10</integer>
+</resources>
