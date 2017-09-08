@@ -4,15 +4,8 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.*;
 import retrofit2.Response;
 import rx.Subscriber;
 import timber.log.Timber;
@@ -30,35 +23,17 @@ import java.util.List;
  * @author Michael Lang
  */
 public class LocatrPresenterImpl implements LocatrPresenter {
-    private GoogleApiClient mClient;
+    private FusedLocationProviderClient mClient;
     private LocatrView mView;
     private Context mContext;
     private Subscriber<Response<FlickrResponse>> subscriber;
+    private LocationCallback mLocationCallback;
 
     public LocatrPresenterImpl(Context context, LocatrView view) {
         mContext = context;
         mView = view;
 
-        mClient = new GoogleApiClient.Builder(context)
-                .addApi(LocationServices.API)
-                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-                    @Override
-                    public void onConnected(@Nullable Bundle bundle) {
-                        mView.onConnected();
-                    }
-
-                    @Override
-                    public void onConnectionSuspended(int i) {
-
-                    }
-                })
-                .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                        mView.onError("ERROR STUB!");
-                    }
-                })
-                .build();
+        mClient = LocationServices.getFusedLocationProviderClient(context);
     }
 
     private void createSubscriber() {
@@ -89,14 +64,20 @@ public class LocatrPresenterImpl implements LocatrPresenter {
 
     @Override
     public void onStart() {
-        mClient.connect();
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult result) {
+                Location location = result.getLastLocation();
+                Timber.i("Got a fix: " + location);
+                mView.onLocationDetected(location);
+                searchPhotos(location);
+            }
+        };
     }
 
     @Override
     public void onStop() {
-        if (mClient.isConnected()) {
-            mClient.disconnect();
-        }
+        mClient.removeLocationUpdates(mLocationCallback);
 
         if (subscriber != null && subscriber.isUnsubscribed()) {
             subscriber.unsubscribe();
@@ -111,7 +92,6 @@ public class LocatrPresenterImpl implements LocatrPresenter {
         request.setInterval(0);
 
         if (checkSelfPermission()) {
-            // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
@@ -122,17 +102,7 @@ public class LocatrPresenterImpl implements LocatrPresenter {
             return;
         }
 
-        LocationServices.FusedLocationApi
-                .requestLocationUpdates(mClient, request, new LocationListener() {
-                    @Override
-                    public void onLocationChanged(Location location) {
-                        Timber.i("Got a fix: " + location);
-                        mView.onLocationDetected(location);
-                        searchPhotos(location);
-
-                        mClient.reconnect();
-                    }
-                });
+        mClient.requestLocationUpdates(request, mLocationCallback, null);
     }
 
     private boolean checkSelfPermission() {

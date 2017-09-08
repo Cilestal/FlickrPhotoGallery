@@ -10,11 +10,11 @@ import android.view.MenuItem;
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.*;
 import timber.log.Timber;
+import ua.dp.michaellang.flickr.photogallery.R;
 import ua.dp.michaellang.flickr.photogallery.entity.Photo;
 import ua.dp.michaellang.flickr.photogallery.presenter.LocatrPresenter;
 import ua.dp.michaellang.flickr.photogallery.presenter.LocatrPresenterImpl;
 import ua.dp.michaellang.flickr.photogallery.view.LocatrView;
-import ua.dp.michaellang.flickr.photogallery.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,8 +40,6 @@ public class LocatrFragment extends SupportMapFragment
 
     private LatLng mCurrentLocation;
     private ArrayList<Photo> mPhotos;
-
-    private boolean mIsConnected = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,16 +86,12 @@ public class LocatrFragment extends SupportMapFragment
     @Override
     public void onError(String mes) {
         mProgressDialog.dismiss();
-        // TODO: 01.09.2017
     }
 
     @Override
     public void onLocationDetected(Location location) {
         mCurrentLocation = new LatLng(location.getLatitude(),
                 location.getLongitude());
-
-        mIsConnected = false;
-        getActivity().invalidateOptionsMenu();
 
         mMap.clear();
         updateCameraPosition(location);
@@ -116,12 +110,6 @@ public class LocatrFragment extends SupportMapFragment
         Timber.d("Found %d photos.", photos.size());
 
         updateMarkers();
-    }
-
-    @Override
-    public void onConnected() {
-        mIsConnected = true;
-        getActivity().invalidateOptionsMenu();
     }
 
     private void updateCameraPosition(Location loc) {
@@ -205,9 +193,6 @@ public class LocatrFragment extends SupportMapFragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_locatr, menu);
-
-        MenuItem item = menu.findItem(R.id.menu_item_locate);
-        item.setEnabled(mIsConnected);
     }
 
     @Override

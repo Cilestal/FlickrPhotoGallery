@@ -14,6 +14,4 @@ public interface LocatrView {
     void onError(String mes);
     void onLocationDetected(Location location);
     void onPhotosLoaded(List<Photo> photos);
-
-    void onConnected();
 }
